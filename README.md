@@ -1,46 +1,19 @@
-# Data Saver Media — Android Pilot
+# Data Saver Media — corrected Android Studio project
 
-This is the current Android pilot project for Data Saver Media. It is an early prototype, not the finished consumer app.
+This is the corrected source project for the Data Saver Media pilot.
 
-## Current pilot features
-- Select a photo or video using Android's system picker.
-- Photos are resized to a maximum 1600-pixel side and JPEG-encoded at quality 82.
-- Videos are transcoded to H.264/AAC using Jetpack Media3 Transformer, with a 1.5 Mbps video bitrate.
-- The selected original is left untouched.
-- The app reports original and optimized file sizes, megabits saved, reduction percentage, and an estimated dollar value.
-- Optimized copies can be shared through Android's share sheet.
+## Fix included
 
-## Build compatibility
-- Android Gradle Plugin: 8.13.2
-- Kotlin Android plugin: 2.2.20
-- Gradle distribution: 8.13 (configured in `gradle/wrapper/gradle-wrapper.properties`)
-- Compile/target SDK: 36
-- Minimum SDK: 26
-- Java: 17
+`MainActivity` now extends AndroidX `ComponentActivity` rather than the platform `android.app.Activity`. This is required for the `registerForActivityResult(...)` photo/video picker APIs used by the app. The matching `androidx.activity.ComponentActivity` import is included.
 
-**Important:** The Gradle wrapper configuration is included, but the generated `gradle-wrapper.jar` and launcher scripts are not included in this package. Android Studio can use a locally installed Gradle 8.13 distribution, and the GitHub Actions workflow below installs Gradle 8.13 directly. Do not let the project use Gradle 9.x with Android Gradle Plugin 8.13.2.
+## Open in Android Studio
 
-## Build in Android Studio
-1. Open this project folder (`DataSaverMedia-GitHub-Upload`) in Android Studio.
-2. In Android Studio, open **Settings → Build, Execution, Deployment → Build Tools → Gradle**.
-3. Set the Gradle distribution/version to **Gradle 8.13** if Android Studio asks for a local Gradle installation or continues selecting Gradle 9.x.
-4. Use JDK 17 for Gradle, then sync the project.
-5. After a successful sync, choose **Build → Build Bundle(s) / APK(s) → Build APK(s)**.
+Open the folder containing this README and the root `settings.gradle.kts` file. Allow Gradle sync to finish, then choose **Build > Generate App Bundles or APKs > Build APK(s)**.
 
-## Build with GitHub Actions
-The workflow is at `.github/workflows/build-apk.yml`. It builds with Gradle 8.13 and uploads `app-debug.apk` as an Actions artifact.
+## GitHub update
 
-When using GitHub's website to upload files, upload the project contents into the repository root so that `app/`, `build.gradle.kts`, and `settings.gradle.kts` are directly visible at the top level. GitHub's web uploader may not show hidden `.github` folders. If it skips that folder, create a new file in GitHub with this exact path:
+To update an existing GitHub repository, replace the repository's `app/src/main/java/com/musesolutions/mediasaver/MainActivity.kt` with the same file from this project and commit the change. The rest of the project files are included for reference and for a clean project copy.
 
-`.github/workflows/build-apk.yml`
+## Important
 
-Then paste the workflow from this project into that file and commit it.
-
-## Important limitations
-- This is a prototype, not a finished system-wide upload interceptor.
-- It does not intercept encrypted network traffic or automatically replace media in every app.
-- It optimizes media selected inside this app, then hands the optimized copy to another app using Android's share sheet.
-- Video bitrate is fixed for this pilot; quality and savings vary by source and device.
-- Estimated dollar value is an allocated share of a plan price, not a guaranteed bill reduction. It only represents actual cash savings if the data reduction avoids overage charges or prepaid data purchases.
-- The cumulative savings counter is session-only and resets when the app process is recreated.
-- Actual transmitted bytes can differ because other apps and servers may further compress media or add protocol overhead.
+This archive contains Android source code, not a prebuilt APK. The change addresses the activity-result compile errors visible in the supplied Android Studio screenshot. A full Android build still needs to be run in Android Studio to confirm the complete project compiles in the user's configured environment.
